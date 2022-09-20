@@ -14,7 +14,12 @@ export default class Meme extends React.Component {
         }
 
         this.state = {
-            url: ''
+            meme: {
+                topText: '',
+                bottomText: '',
+                randomImage: ''
+            },
+            allMemeImages: memeData
         }
 
         // const [memeImage, setMemeImage] = React.useState("");
@@ -32,19 +37,21 @@ export default class Meme extends React.Component {
                     <input type="text" placeholder="Bottom text"></input>
                 </div>
                 <button onClick={this.generateMeme.bind(this, 'whatupsss')}>Generate a new meme</button>
-                <img src={this.state.url} className="meme-image"/>
+                <img src={this.state.meme.randomImage} className="meme-image"/>
             </div>
         )
     }
 
     generateMeme(event, text) {
-        const memesArray = memeData.data.memes;
+        const memesArray = this.state.allMemeImages.data.memes;
         const randomNumber = Math.floor(Math.random() * memesArray.length);
-        
+    
+        this.setState({
+            meme: {randomImage: memesArray[randomNumber].url}
+        });
 
-        // setState
-        this.setState({url: memesArray[randomNumber].url}, () => {
-            console.log(this.state.url);
-        })
+        // this.setState({url: memesArray[randomNumber].url}, () => {
+        //     console.log(this.state);
+        // })
     }
 }

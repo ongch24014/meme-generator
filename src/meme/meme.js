@@ -19,8 +19,10 @@ export default class Meme extends React.Component {
                 bottomText: '',
                 randomImage: ''
             },
-            allMemeImages: memeData
+            allMemeImages: {}
         }
+
+        
 
         // const [memeImage, setMemeImage] = React.useState("");
         // setMemeImage("anything");
@@ -29,15 +31,29 @@ export default class Meme extends React.Component {
         // });
     }
 
+    componentDidMount() {
+        fetch("https://api.imgflip.com/get_memes")
+        .then(res => res.json())
+        .then(data => {
+            this.setState({
+                allMemeImages: data
+            });
+        })
+    }
+
     render() {
         return (
             <div className="meme-form">
                 <div className="input-list">
-                    <input type="text" placeholder="Top text"></input>
-                    <input type="text" placeholder="Bottom text"></input>
+                    <input type="text" placeholder="Top text" name="topText" onChange={this.updateText.bind(this)}></input>
+                    <input type="text" placeholder="Bottom text" name="bottomText" onChange={this.updateText.bind(this)}></input>
                 </div>
                 <button onClick={this.generateMeme.bind(this, 'whatupsss')}>Generate a new meme</button>
-                <img src={this.state.meme.randomImage} className="meme-image"/>
+                <div className="meme">
+                    <img src={this.state.meme.randomImage} className="meme-image" />
+                    {this.state.meme.topText !== '' && <h2 className="meme-text top">{this.state.meme.topText}</h2>}
+                    {this.state.meme.bottomText !== '' && <h2 className="meme-text bottom">{this.state.meme.bottomText}</h2>}
+                </div>
             </div>
         )
     }
@@ -47,11 +63,27 @@ export default class Meme extends React.Component {
         const randomNumber = Math.floor(Math.random() * memesArray.length);
     
         this.setState({
-            meme: {randomImage: memesArray[randomNumber].url}
+            meme: {
+                ...this.state.meme,
+                randomImage: memesArray[randomNumber].url
+            }
         });
+        console.log(this.state)
 
         // this.setState({url: memesArray[randomNumber].url}, () => {
         //     console.log(this.state);
         // })
+    }
+
+    updateText(event) {
+        const {name, value} = event.target;
+        this.setState({
+            meme: {
+                ...this.state.meme,
+                [name]: value
+            }
+        });
+
+        console.log(this.state)
     }
 }
